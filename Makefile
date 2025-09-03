@@ -4,7 +4,7 @@ CPPFLAGS := -Iinclude
 
 SRC := $(wildcard src/*.c)
 OBJ := $(SRC:.c=.o)
-BIN := shell
+BIN := csh
 
 $(BIN): $(OBJ)
 	$(CC) $(CFLAGS) $(OBJ) -o $@

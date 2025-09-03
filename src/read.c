@@ -1,16 +1,34 @@
 #include <stdlib.h>
 #include <stdio.h>
+#include <errno.h>
 
 char *readline() {
   char *line = NULL;
-  size_t len = 0;
-  ssize_t read;
+  size_t cap = 0;
 
-  read = getline(&line, &len, stdin);
+  for (;;) {
+    errno = 0;
+    ssize_t input = getline(&line, &cap, stdin);
 
-  if (read != -1 && line[read - 1] == '\n') {
-    line[read - 1] = '\0';
+    if (input == -1) {
+      if (feof(stdin)) {
+        free(line);
+        return NULL;
+      }
+
+      if (errno == EINTR) {
+        clearerr(stdin);
+        continue;
+      }
+
+      free(line);
+      return NULL;
+    }
+
+    if (input != -1 && line[input - 1] == '\n') {
+      line[input - 1] = '\0';
+    }
+
+    return line;
   }
-
-  return line;
 }
