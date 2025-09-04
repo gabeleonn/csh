@@ -4,6 +4,7 @@
 
 #include "read.h"
 #include "shell.h"
+#include "lexer.h"
 
 int main(void) {
   bool running = 1;
@@ -27,8 +28,12 @@ int main(void) {
     }
 
     // tokenize
-    fputs(line, stdout); putchar('\n');  // placeholder
+    Token *tokens = tokenize(line);
+    for (size_t i = 0; tokens[i].type != SENTINEL; i++) {
+        printf("type=%d value=%s\n", tokens[i].type, tokens[i].value ? tokens[i].value : "(null)");
+    }
     free(line);
+    free_tokens(tokens);
 
     // exec/builtins
 
